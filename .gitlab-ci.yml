@@ -7,9 +7,9 @@ image: alpine:3.10
 test:
   stage: test
   script:
-  - 'true'
+    - 'true'
 
 build:
   stage: build
   script:
-  - 'true'
+    - 'true'
