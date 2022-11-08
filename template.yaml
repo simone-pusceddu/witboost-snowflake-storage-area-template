@@ -1,0 +1,253 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: snowflake-workload-airbyte-template.1
+  title: Workload Airbyte Template
+  description: Create a repository containing the definition of a Airbyte Workload
+  mesh:
+    icon: https://marketplace.digitalocean.com/_next/image?url=https%3A%2F%2Fmarketplace-assets.digitalocean.com%2Flogos%2Fairbyte.png&w=3840&q=75
+  tags:
+    - snowflake
+    - airbyte
+    - workload
+spec:
+  owner: agilelab
+  type: workload
+
+  parameters:
+    - title: Component basic information
+      required:
+        - name
+        - domain
+        - dataproduct
+        - description
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Required name used for display purposes
+          ui:field: EntityNamePicker
+          default: Airbyte Workload
+          ui:options:
+            allowArbitraryValues: true
+        fullyQualifiedName:
+          title: Fully Qualified Name
+          type: string
+          description: Workload fully qualified name
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this Workload is for
+        domain:
+          title: Domain
+          type: string
+          description: Domain of the Data Product this Workload belongs to
+          ui:field: EntityPicker
+          ui:options:
+            allowArbitraryValues: false
+            allowedKinds: 
+              - Domain
+        dataproduct:
+          title: Data Product
+          type: string
+          description: Data Product this Workload belongs to
+          ui:field: EntityPicker
+          ui:filter:
+            - fieldName: domain
+              entityPath: spec.domain
+          ui:options:
+            allowArbitraryValues: false
+            allowedKinds: 
+              - System
+        identifier:
+          title: Identifier
+          type: string
+          description: A unique identifier for the entity inside the domain. It will not be editable after creation and is expected to be a string that is sequences of [a-zA-Z] separated by any of [-_]. An example could be 'finance-customer'
+          ui:field: ComponentIdentifierPicker
+          ui:options:
+            allowArbitraryValues: false
+        developmentGroup:
+          title: DevelopmentGroup
+          type: string
+          description: Data Product development group
+          ui:field: EntitySelectionPicker
+          ui:fieldName: dataproduct
+          ui:property: spec.owner
+          ui:options:
+            allowArbitraryValues: false
+        dependsOn:
+          title: Depends on
+          type: array
+          default: []
+          items:
+            type: string
+            ui:field: EntityComponentsPicker
+            ui:fieldName: dataproduct
+            ui:options:
+              allowArbitraryValues: false
+          description: A Workload could depend on other components
+        readsFrom:
+          title: Reads from
+          type: array
+          default: []
+          items:
+            type: string
+            ui:field: ReadsFromPicker
+          description: This is filled only for DataPipeline workloads and it represents the list of output ports or external systems that is reading
+
+    - title: Source File Details
+      required:
+        - sourceName
+        - url
+        - format
+        - storage
+        - dataset_name
+      properties:
+        sourceName:
+          title: Name of the Source
+          type: string
+          description: Name of the Source
+        url:
+          title: URL of the Source
+          type: string
+          description: URL of the Source
+        format:
+          title: Format of the Source
+          type: string
+          description: Format of the Source
+          enum:
+            - csv
+            - json
+            - jsonl
+            - excel
+            - excel_binary
+            - feather
+            - parquet
+            - yaml
+        storage:
+          title: Storage Provider
+          type: string
+          description: storage (Ex - HTTPS)
+        user_agent:
+          title: User-Agent
+          type: boolean
+          description: Add User-Agent to request
+        dataset_name:
+          title: Name of the Dataset
+          type: string
+          description: Name of the Dataset
+
+    - title: Snowflake Destination details
+      required:
+        - destinationName
+        - host
+        - schema
+        - database
+        - warehouse
+      properties:
+        destinationName:
+          title: Name of the Destination
+          type: string
+          description: Name of the Destination
+        host:
+          title: Host
+          type: string
+          description: Enter your Snowflake account's locator (in the format ...snowflakecomputing.com)
+        warehouse:
+          title: Warehouse
+          type: string
+          description: Name of the Warehouse
+        database:
+          title: Database
+          type: string
+          description: Name of the Database within the Schema
+        schema:
+          title: Schema
+          type: string
+          description: Name of the Schema
+
+    - title: Connection
+      required:
+        - connectionName
+      properties:
+        connectionName:
+          title: connectionName
+          type: string
+          description: Name of the connection
+
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - gitlab.com
+        rootDirectory:
+          title: Root Directory
+          type: string
+          description: Path that will be used as the repository root for this component
+          default: .
+
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: '${{ parameters.rootDirectory }}'
+        values:
+          name: '${{ parameters.name }}'
+          fullyQualifiedName: '${{ parameters.fullyQualifiedName }}'
+          description: '${{ parameters.description }}'
+          domain: '${{ parameters.domain }}'
+          dataproduct: '${{ parameters.dataproduct }}'
+          identifier: '${{ parameters.identifier }}'
+          developmentGroup: '${{ parameters.developmentGroup }}'
+          dependsOn: '${{ parameters.dependsOn }}'
+          readsFrom: '${{ parameters.readsFrom }}'
+          sourceName: '${{parameters.sourceName}}'
+          url: '${{parameters.url}}'
+          format: '${{parameters.format}}'
+          storage: '${{parameters.storage}}'
+          dataset_name: '${{parameters.dataset_name}}'
+          destinationName: '${{parameters.destinationName}}'
+          host: '${{parameters.host}}'
+          schema: '${{parameters.schema}}'
+          database: '${{parameters.database}}'
+          warehouse: '${{parameters.warehouse}}'
+          connectionName: '${{parameters.connectionName}}'
+          useCaseTemplateId: urn:dmb:utm:dbt-standard:0.0.0
+          infrastructureTemplateId: urn:dmb:itm:dbt-provisioner:1
+          useCaseTemplateVersion: 0.0.0
+          destination: '${{ parameters.repoUrl | parseRepoUrl }}'
+          displayName: '${{ parameters.displayName }}'
+
+
+    - id: publish
+      name: Publish
+      action: witboostMeshComponent:publish:gitlab
+      input:
+        allowedHosts: ['gitlab.com']
+        description: 'This is ${{ parameters.name }}'
+        repoUrl: '${{ parameters.repoUrl }}'
+        rootDirectory: '${{ parameters.rootDirectory }}'
+        dataproduct: '${{ parameters.dataproduct }}'
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: '${{ steps.publish.output.repoContentsUrl }}'
+        catalogInfoPath: '/${{ parameters.rootDirectory }}/catalog-info.yaml'
+
+  output:
+    links:
+      - title: Repository
+        url: '${{ steps.publish.output.remoteUrl }}'
+      - title: Open in catalog
+        icon: catalog
+        entityRef: '${{ steps.register.output.entityRef }}'
