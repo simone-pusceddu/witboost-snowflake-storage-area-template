@@ -10,6 +10,7 @@ metadata:
     - snowflake
     - cdp
     - workload
+    - output-port
 spec:
   owner: agilelab
   type: outputport
