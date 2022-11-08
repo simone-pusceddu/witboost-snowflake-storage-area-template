@@ -7,9 +7,9 @@ metadata:
     gitlab.com/project-slug: ${{ values.destination.owner + "/" + values.destination.repo }}
     backstage.io/techdocs-ref: dir:.
   tags:
+    - outputport
     - snowflake
-    - airbyte
-    - workload
+    - cdp
 spec:
   type: workload
   lifecycle: experimental
@@ -20,28 +20,45 @@ spec:
     name: ${{ values.name | dump }}
     fullyQualifiedName: ${{ values.fullyQualifiedName | dump }}
     description: ${{ values.description | dump }}
-    kind: workload
+    kind: outputport
     version: ${{ values.identifier.split(".")[2] + ".0.0" }}
     infrastructureTemplateId: ${{ values.infrastructureTemplateId }}
     useCaseTemplateId: ${{ values.useCaseTemplateId }}
     dependsOn: {% if values.dependsOn | length > 0 %}{% for i in values.dependsOn %}
       - ${{ i }}{% endfor %}{% else %}[]{% endif %}
-    platform: Snowflake
-    technology: airbyte
-    workloadType: batch
-    connectionType: DataPipeline
+    platform: CDP on Snowflake
+    technology: Snowflake
+    outputPortType: Files
+    creationDate: ${{ values.creationDate }}
+    startDate: ${{ values.creationDate }}
+    processDescription: ${{ values.processDescription }}
+    dataContract:
+      schema: []
+      termsAndConditions: ${{ values.termsAndConditions | dump }}
+      endpoint: ${{ values.endpoint | dump }}
+      SLA:
+        intervalOfChange: ${{ values.intervalOfChange }}
+        timeliness: ${{ values.timeliness }}
+        upTime: ${{ values.upTime }}
+    dataSharingAgreements:
+      purpose: ${{ values.purpose | dump }}
+      billing: ${{ values.billing | dump }}
+      security: ${{ values.security | dump }}
+      intendedUsage: ${{ values.intendedUsage | dump }}
+      limitations: ${{ values.limitations | dump }}
+      lifeCycle: ${{ values.lifeCycle | dump }}
+      confidentiality: ${{ values.confidentiality | dump }}
     tags: []
-    readsFrom: {% if values.readsFrom | length > 0 %}{% for i in values.readsFrom %}
-      - ${{ i }}{% endfor %}{% else %}[]{% endif %}
+    sampleData: {}
+    semanticLinking: []
     specific:
-      sourceName: ${{ values.sourceName }}
-      url: ${{ values.url }}
-      format: ${{ values.format }}
-      storage: ${{ values.storage }}
-      dataset_name: ${{ values.dataset_name }}
       destinationName: ${{ values.destinationName }}
       host: ${{ values.host }}
       schema: ${{ values.schema }}
       database: ${{ values.database }}
       warehouse: ${{ values.warehouse }}
-      connectionName: ${{ values.connectionName }}
+      acl:
+        owners: {% if values.owners | length > 0 %}{% for i in values.owners %}
+          - ${{ i }}{{% endfor %}}{% else %}[]{% endif %}
+        users: {% if values.users | length > 0 %}{% for i in values.users %}
+          - ${{ i }}{{% endfor %}}{% else %}[]{% endif %}

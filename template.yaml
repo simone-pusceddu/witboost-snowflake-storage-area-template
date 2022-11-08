@@ -1,18 +1,18 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: snowflake-workload-airbyte-template.1
-  title: Workload Airbyte Template
-  description: Create a repository containing the definition of a Airbyte Workload
+  name: cdp-snowflake-outputport-template.1
+  title: Output Port CDP Snowflake Template
+  description: Create a repository containing the definition of a CDP Snowflake Output Port
   mesh:
-    icon: https://marketplace.digitalocean.com/_next/image?url=https%3A%2F%2Fmarketplace-assets.digitalocean.com%2Flogos%2Fairbyte.png&w=3840&q=75
+    icon: https://avatars.githubusercontent.com/u/6453780?s=280&v=4
   tags:
     - snowflake
-    - airbyte
+    - cdp
     - workload
 spec:
   owner: agilelab
-  type: workload
+  type: outputport
 
   parameters:
     - title: Component basic information
@@ -27,7 +27,7 @@ spec:
           type: string
           description: Required name used for display purposes
           ui:field: EntityNamePicker
-          default: Airbyte Workload
+          default: Snowflake CDP Output Port
           ui:options:
             allowArbitraryValues: true
         fullyQualifiedName:
@@ -85,59 +85,68 @@ spec:
             ui:fieldName: dataproduct
             ui:options:
               allowArbitraryValues: false
-          description: A Workload could depend on other components
-        readsFrom:
-          title: Reads from
-          type: array
-          default: []
-          items:
-            type: string
-            ui:field: ReadsFromPicker
-          description: This is filled only for DataPipeline workloads and it represents the list of output ports or external systems that is reading
+          description: An Output Port could depend on other output ports or storage areas
 
-    - title: Source File Details
-      required:
-        - sourceName
-        - url
-        - format
-        - storage
-        - dataset_name
+    - title: Provide some additional information
       properties:
-        sourceName:
-          title: Name of the Source
+        processDescription:
+          title: Process Description
           type: string
-          description: Name of the Source
-        url:
-          title: URL of the Source
+          description: what is the underlying process that contributes to generate the data exposed by this output port
+        intervalOfChange:
+          title: Interval of change
           type: string
-          description: URL of the Source
-        format:
-          title: Format of the Source
+          description: how often changes in the data are reflected
+        timeliness:
+          title: Timeliness
           type: string
-          description: Format of the Source
-          enum:
-            - csv
-            - json
-            - jsonl
-            - excel
-            - excel_binary
-            - feather
-            - parquet
-            - yaml
-        storage:
-          title: Storage Provider
+          description: the skew between the time that a business fact occuts and when it becomes visibile in the data
+        upTime:
+          title: Up time
           type: string
-          description: storage (Ex - HTTPS)
-        user_agent:
-          title: User-Agent
-          type: boolean
-          description: Add User-Agent to request
-        dataset_name:
-          title: Name of the Dataset
+          description: the percentage of port availability
+        termsAndConditions:
+          title: Terms and conditions
           type: string
-          description: Name of the Dataset
+          description: If the data is usable only in specific environments
+        endpoint:
+          title: Endpoint
+          type: string
+          description: this is the API endpoint that self-describe the output port and provide insightful information at runtime about the physical location of the data, the protocol must be used, etc.
 
-    - title: Snowflake Destination details
+
+    - title: Data sharing agreements information
+      properties:
+        purpose:
+          title: Purpose
+          type: string
+          description: what is the goal of this data set
+        billing:
+          title: Billing
+          type: string
+          description: how a consumer will be charged back when it consumes this output port
+        security:
+          title: Security
+          type: string
+          description: additional information related to security aspects, like restrictions, maskings, sensibile information and privacy
+        intendedUsage:
+          title: IntendedUsage
+          type: string
+          description: any other information needed by the consumer in order to effectively consume the data, it could be related to technical stuff (e.g. extract no more than one year of data for good performances ) or to business domains (e.g. this data is only useful in the marketing domains)
+        limitations:
+          title: Limitations
+          type: string
+          description: If any limitation is present it must be made super clear to the consumers
+        lifeCycle:
+          title: LifeCycle
+          type: string
+          description: Describe how the data will be historicized and how and when it will be deleted
+        confidentiality:
+          title: Confidentiality
+          type: string
+          description: Describe what a consumer should do to keep the information confidential, how to process and store it. Permission to share or report it.
+
+    - title: Provide Output port deployment information
       required:
         - destinationName
         - host
@@ -146,9 +155,9 @@ spec:
         - warehouse
       properties:
         destinationName:
-          title: Name of the Destination
+          title: destinationName
           type: string
-          description: Name of the Destination
+          description: Name of the destination
         host:
           title: Host
           type: string
@@ -166,14 +175,23 @@ spec:
           type: string
           description: Name of the Schema
 
-    - title: Connection
-      required:
-        - connectionName
+    - title: Provide Output Port ACL (Access Control List)
       properties:
-        connectionName:
-          title: connectionName
-          type: string
-          description: Name of the connection
+        owners:
+          title: Owners
+          type: array
+          items:
+            type: string
+          default: []
+          description: List of owner users with Read / Write Access
+        users:
+          title: Users
+          type: array
+          items:
+            type: string
+          default: []
+          description: List of users with Read Access
+
 
     - title: Choose a location
       required:
@@ -208,23 +226,33 @@ spec:
           identifier: '${{ parameters.identifier }}'
           developmentGroup: '${{ parameters.developmentGroup }}'
           dependsOn: '${{ parameters.dependsOn }}'
-          readsFrom: '${{ parameters.readsFrom }}'
-          sourceName: '${{parameters.sourceName}}'
-          url: '${{parameters.url}}'
-          format: '${{parameters.format}}'
-          storage: '${{parameters.storage}}'
-          dataset_name: '${{parameters.dataset_name}}'
+          processDescription: '${{ parameters.processDescription }}'
+          intervalOfChange: '${{ parameters.intervalOfChange }}'
+          timeliness: '${{ parameters.timeliness }}'
+          upTime: '${{ parameters.upTime }}'
+          termsAndConditions: '${{ parameters.termsAndConditions }}'
+          endpoint: '${{ parameters.endpoint }}'
+          purpose: '${{ parameters.purpose }}'
+          billing: '${{ parameters.billing }}'
+          security: '${{ parameters.security }}'
+          intendedUsage: '${{ parameters.intendedUsage }}'
+          limitations: '${{ parameters.limitations }}'
+          lifeCycle: '${{ parameters.lifeCycle }}'
+          confidentiality: '${{ parameters.confidentiality }}'
           destinationName: '${{parameters.destinationName}}'
           host: '${{parameters.host}}'
           schema: '${{parameters.schema}}'
           database: '${{parameters.database}}'
           warehouse: '${{parameters.warehouse}}'
-          connectionName: '${{parameters.connectionName}}'
-          useCaseTemplateId: urn:dmb:utm:dbt-standard:0.0.0
-          infrastructureTemplateId: urn:dmb:itm:dbt-provisioner:1
-          useCaseTemplateVersion: 0.0.0
+          owners: '${{ parameters.owners }}'
+          users: '${{ parameters.users }}'
+          creationDate: '${{ parameters.creationDate }}' # Not sure on how it's getting data.
+          useCaseTemplateId: urn:dmb:utm:cdp-snowflake-outputport-template:0.0.0
+          infrastructureTemplateId: urn:dmb:itm:cdp-snowflake-outputport-provisioner:0
           destination: '${{ parameters.repoUrl | parseRepoUrl }}'
           displayName: '${{ parameters.displayName }}'
+          artifact_id: '${{ parameters.name }}' # Not Sure on this, would need to verify whether to include (or) not.
+          useCaseTemplateVersion: 0.0.0
 
 
     - id: publish
