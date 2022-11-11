@@ -28,12 +28,42 @@ spec:
       - ${{ i }}{% endfor %}{% else %}[]{% endif %}
     platform: CDP on Snowflake
     technology: Snowflake
-    outputPortType: Files
+    outputPortType: SQL
     creationDate: ${{ values.creationDate }}
     startDate: ${{ values.creationDate }}
-    processDescription: ${{ values.processDescription }}
+    processDescription: ${{ values.processDescription | dump }}
     dataContract:
-      schema: []
+      schema:
+        - name: date
+          dataType: DATE
+          constraint: NOT NULL
+        - name: location_key
+          dataType: TEXT
+          constraint: PRIMARY KEY
+        - name: new_confirmed
+          dataType: NUMBER
+          constraint: NOT NULL
+        - name: new_deceased
+          dataType: NUMBER
+          constraint: NOT NULL
+        - name: new_recovered
+          dataType: NUMBER
+          constraint: NO CONSTRAINT
+        - name: new_tested
+          dataType: NUMBER
+          constraint: NO CONSTRAINT
+        - name: cumulative_confirmed
+          dataType: NUMBER
+          constraint: NOT NULL
+        - name: cumulative_deceased
+          dataType: NUMBER
+          constraint: NOT NULL
+        - name: cumulative_recovered
+          dataType: NUMBER
+          constraint: NO CONSTRAINT
+        - name: cumulative_tested
+          dataType: NUMBER
+          constraint: NO CONSTRAINT
       termsAndConditions: ${{ values.termsAndConditions | dump }}
       endpoint: ${{ values.endpoint | dump }}
       SLA:
@@ -52,11 +82,9 @@ spec:
     sampleData: {}
     semanticLinking: []
     specific:
-      destinationName: ${{ values.destinationName }}
-      host: ${{ values.host }}
-      schema: ${{ values.schema }}
+      tableName: ${{ values.tableName }}
       database: ${{ values.database }}
-      warehouse: ${{ values.warehouse }}
+      schema: ${{ values.schema }}
       acl:
         owners: {% if values.owners | length > 0 %}{% for i in values.owners %}
           - ${{ i }}{{% endfor %}}{% else %}[]{% endif %}

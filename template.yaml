@@ -149,28 +149,16 @@ spec:
 
     - title: Provide Output port deployment information
       required:
-        - destinationName
-        - host
-        - schema
-        - database
-        - warehouse
+        - tableName
       properties:
-        destinationName:
-          title: destinationName
+        tableName:
+          title: tableName
           type: string
-          description: Name of the destination
-        host:
-          title: Host
-          type: string
-          description: Enter your Snowflake account's locator (in the format ...snowflakecomputing.com)
-        warehouse:
-          title: Warehouse
-          type: string
-          description: Name of the Warehouse
+          description: Name of the table that you want to create inside a Snowflake Schema.
         database:
           title: Database
           type: string
-          description: Name of the Database within the Schema
+          description: Name of the Database
         schema:
           title: Schema
           type: string
@@ -240,19 +228,17 @@ spec:
           limitations: '${{ parameters.limitations }}'
           lifeCycle: '${{ parameters.lifeCycle }}'
           confidentiality: '${{ parameters.confidentiality }}'
-          destinationName: '${{parameters.destinationName}}'
-          host: '${{parameters.host}}'
-          schema: '${{parameters.schema}}'
-          database: '${{parameters.database}}'
-          warehouse: '${{parameters.warehouse}}'
+          tableName: '${{parameters.tableName}}'
+          database: '${{ parameters.database }}'
+          schema: '${{ parameters.schema }}'
           owners: '${{ parameters.owners }}'
           users: '${{ parameters.users }}'
-          creationDate: '${{ parameters.creationDate }}' # Not sure on how it's getting data.
+          creationDate: '${{ parameters.creationDate }}'
           useCaseTemplateId: urn:dmb:utm:cdp-snowflake-outputport-template:0.0.0
           infrastructureTemplateId: urn:dmb:itm:cdp-snowflake-outputport-provisioner:0
           destination: '${{ parameters.repoUrl | parseRepoUrl }}'
           displayName: '${{ parameters.displayName }}'
-          artifact_id: '${{ parameters.name }}' # Not Sure on this, would need to verify whether to include (or) not.
+          artifact_id: '${{ parameters.name }}'
           useCaseTemplateVersion: 0.0.0
 
 
