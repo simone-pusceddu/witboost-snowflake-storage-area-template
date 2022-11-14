@@ -88,65 +88,6 @@ spec:
               allowArbitraryValues: false
           description: An Output Port could depend on other output ports or storage areas
 
-    - title: Provide some additional information
-      properties:
-        processDescription:
-          title: Process Description
-          type: string
-          description: what is the underlying process that contributes to generate the data exposed by this output port
-        intervalOfChange:
-          title: Interval of change
-          type: string
-          description: how often changes in the data are reflected
-        timeliness:
-          title: Timeliness
-          type: string
-          description: the skew between the time that a business fact occuts and when it becomes visibile in the data
-        upTime:
-          title: Up time
-          type: string
-          description: the percentage of port availability
-        termsAndConditions:
-          title: Terms and conditions
-          type: string
-          description: If the data is usable only in specific environments
-        endpoint:
-          title: Endpoint
-          type: string
-          description: this is the API endpoint that self-describe the output port and provide insightful information at runtime about the physical location of the data, the protocol must be used, etc.
-
-
-    - title: Data sharing agreements information
-      properties:
-        purpose:
-          title: Purpose
-          type: string
-          description: what is the goal of this data set
-        billing:
-          title: Billing
-          type: string
-          description: how a consumer will be charged back when it consumes this output port
-        security:
-          title: Security
-          type: string
-          description: additional information related to security aspects, like restrictions, maskings, sensibile information and privacy
-        intendedUsage:
-          title: IntendedUsage
-          type: string
-          description: any other information needed by the consumer in order to effectively consume the data, it could be related to technical stuff (e.g. extract no more than one year of data for good performances ) or to business domains (e.g. this data is only useful in the marketing domains)
-        limitations:
-          title: Limitations
-          type: string
-          description: If any limitation is present it must be made super clear to the consumers
-        lifeCycle:
-          title: LifeCycle
-          type: string
-          description: Describe how the data will be historicized and how and when it will be deleted
-        confidentiality:
-          title: Confidentiality
-          type: string
-          description: Describe what a consumer should do to keep the information confidential, how to process and store it. Permission to share or report it.
-
     - title: Provide Output port deployment information
       required:
         - tableName
@@ -163,24 +104,6 @@ spec:
           title: Schema
           type: string
           description: Name of the Schema
-
-    - title: Provide Output Port ACL (Access Control List)
-      properties:
-        owners:
-          title: Owners
-          type: array
-          items:
-            type: string
-          default: []
-          description: List of owner users with Read / Write Access
-        users:
-          title: Users
-          type: array
-          items:
-            type: string
-          default: []
-          description: List of users with Read Access
-
 
     - title: Choose a location
       required:
@@ -215,24 +138,9 @@ spec:
           identifier: '${{ parameters.identifier }}'
           developmentGroup: '${{ parameters.developmentGroup }}'
           dependsOn: '${{ parameters.dependsOn }}'
-          processDescription: '${{ parameters.processDescription }}'
-          intervalOfChange: '${{ parameters.intervalOfChange }}'
-          timeliness: '${{ parameters.timeliness }}'
-          upTime: '${{ parameters.upTime }}'
-          termsAndConditions: '${{ parameters.termsAndConditions }}'
-          endpoint: '${{ parameters.endpoint }}'
-          purpose: '${{ parameters.purpose }}'
-          billing: '${{ parameters.billing }}'
-          security: '${{ parameters.security }}'
-          intendedUsage: '${{ parameters.intendedUsage }}'
-          limitations: '${{ parameters.limitations }}'
-          lifeCycle: '${{ parameters.lifeCycle }}'
-          confidentiality: '${{ parameters.confidentiality }}'
           tableName: '${{parameters.tableName}}'
           database: '${{ parameters.database }}'
           schema: '${{ parameters.schema }}'
-          owners: '${{ parameters.owners }}'
-          users: '${{ parameters.users }}'
           creationDate: '${{ parameters.creationDate }}'
           useCaseTemplateId: urn:dmb:utm:cdp-snowflake-outputport-template:0.0.0
           infrastructureTemplateId: urn:dmb:itm:cdp-snowflake-outputport-provisioner:0
@@ -240,7 +148,6 @@ spec:
           displayName: '${{ parameters.displayName }}'
           artifact_id: '${{ parameters.name }}'
           useCaseTemplateVersion: 0.0.0
-
 
     - id: publish
       name: Publish

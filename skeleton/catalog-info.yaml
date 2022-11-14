@@ -31,7 +31,6 @@ spec:
     outputPortType: SQL
     creationDate: ${{ values.creationDate }}
     startDate: ${{ values.creationDate }}
-    processDescription: ${{ values.processDescription | dump }}
     dataContract:
       schema:
         - name: date
@@ -64,20 +63,6 @@ spec:
         - name: cumulative_tested
           dataType: NUMBER
           constraint: NO CONSTRAINT
-      termsAndConditions: ${{ values.termsAndConditions | dump }}
-      endpoint: ${{ values.endpoint | dump }}
-      SLA:
-        intervalOfChange: ${{ values.intervalOfChange }}
-        timeliness: ${{ values.timeliness }}
-        upTime: ${{ values.upTime }}
-    dataSharingAgreements:
-      purpose: ${{ values.purpose | dump }}
-      billing: ${{ values.billing | dump }}
-      security: ${{ values.security | dump }}
-      intendedUsage: ${{ values.intendedUsage | dump }}
-      limitations: ${{ values.limitations | dump }}
-      lifeCycle: ${{ values.lifeCycle | dump }}
-      confidentiality: ${{ values.confidentiality | dump }}
     tags: []
     sampleData: {}
     semanticLinking: []
@@ -85,8 +70,3 @@ spec:
       tableName: ${{ values.tableName }}
       database: ${{ values.database }}
       schema: ${{ values.schema }}
-      acl:
-        owners: {% if values.owners | length > 0 %}{% for i in values.owners %}
-          - ${{ i }}{{% endfor %}}{% else %}[]{% endif %}
-        users: {% if values.users | length > 0 %}{% for i in values.users %}
-          - ${{ i }}{{% endfor %}}{% else %}[]{% endif %}
