@@ -35,16 +35,16 @@ spec:
       schema:
         - name: date
           dataType: TEXT
-          constraint: NOT NULL
+          constraint: NO CONSTRAINT
         - name: location_key
           dataType: TEXT
-          constraint: PRIMARY KEY
+          constraint: NO CONSTRAINT
         - name: new_confirmed
           dataType: NUMBER
-          constraint: NOT NULL
+          constraint: NO CONSTRAINT
         - name: new_deceased
           dataType: NUMBER
-          constraint: NOT NULL
+          constraint: NO CONSTRAINT
         - name: new_recovered
           dataType: NUMBER
           constraint: NO CONSTRAINT
@@ -53,10 +53,10 @@ spec:
           constraint: NO CONSTRAINT
         - name: cumulative_confirmed
           dataType: NUMBER
-          constraint: NOT NULL
+          constraint: NO CONSTRAINT
         - name: cumulative_deceased
           dataType: NUMBER
-          constraint: NOT NULL
+          constraint: NO CONSTRAINT
         - name: cumulative_recovered
           dataType: NUMBER
           constraint: NO CONSTRAINT
