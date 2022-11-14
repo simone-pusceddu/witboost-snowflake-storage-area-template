@@ -34,7 +34,7 @@ spec:
     dataContract:
       schema:
         - name: date
-          dataType: DATE
+          dataType: TEXT
           constraint: NOT NULL
         - name: location_key
           dataType: TEXT
