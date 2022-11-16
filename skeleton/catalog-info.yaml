@@ -9,7 +9,6 @@ metadata:
   tags:
     - outputport
     - snowflake
-    - cdp
 spec:
   type: workload
   lifecycle: experimental
@@ -26,7 +25,7 @@ spec:
     useCaseTemplateId: ${{ values.useCaseTemplateId }}
     dependsOn: {% if values.dependsOn | length > 0 %}{% for i in values.dependsOn %}
       - ${{ i }}{% endfor %}{% else %}[]{% endif %}
-    platform: CDP on Snowflake
+    platform: Snowflake
     technology: Snowflake
     outputPortType: SQL
     creationDate: ${{ values.creationDate }}
