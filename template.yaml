@@ -1,18 +1,17 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: snowflake-outputport-template.1
-  title: Output Port Snowflake Template
-  description: Create a repository containing the definition of a Snowflake Output Port
+  name: snowflake-storage-template.1
+  title: Snowflake Storage Template
+  description: Create a repository containing the definition of a Snowflake Storage Template needed to support a data product
   mesh:
     icon: https://avatars.githubusercontent.com/u/6453780?s=280&v=4
   tags:
     - snowflake
-    - workload
-    - output-port
+    - storage
 spec:
   owner: agilelab
-  type: outputport
+  type: storage
 
   parameters:
     - title: Component basic information
@@ -27,7 +26,7 @@ spec:
           type: string
           description: Required name used for display purposes
           ui:field: EntityNamePicker
-          default: Snowflake Output Port
+          default: Snowflake Component
           ui:options:
             allowArbitraryValues: true
         fullyQualifiedName:
@@ -37,11 +36,11 @@ spec:
         description:
           title: Description
           type: string
-          description: Help others understand what this Workload is for
+          description: Help others understand what this component is for
         domain:
           title: Domain
           type: string
-          description: Domain of the Data Product this Workload belongs to
+          description: Domain of the Data Product this component belongs to
           ui:field: EntityPicker
           ui:options:
             allowArbitraryValues: false
@@ -85,16 +84,10 @@ spec:
             ui:fieldName: dataproduct
             ui:options:
               allowArbitraryValues: false
-          description: An Output Port could depend on other output ports or storage areas
+          description: A component could depend on other output ports or storage areas
 
-    - title: Provide Output port deployment information
-      required:
-        - tableName
+    - title: Provide Snowflake deployment information
       properties:
-        tableName:
-          title: Table name
-          type: string
-          description: Name of the table that you want to create inside the Snowflake Schema
         database:
           title: Database
           type: string
@@ -102,7 +95,7 @@ spec:
         schema:
           title: Schema
           type: string
-          description: Name of the Schema inside a Snowflake Database. If not provided, default value (In this case, dpname_dpversion) would be assigned during the creation.
+          description: Name of the Schema inside a snowflake database. If not provided, default value (In this case, dpname_dpversion) would be assigned during the creation.
 
     - title: Choose a location
       required:
@@ -137,12 +130,10 @@ spec:
           identifier: '${{ parameters.identifier }}'
           developmentGroup: '${{ parameters.developmentGroup }}'
           dependsOn: '${{ parameters.dependsOn }}'
-          tableName: '${{parameters.tableName}}'
           database: '${{ parameters.database }}'
-          schema: '${{ parameters.schema }}'
-          creationDate: '${{ parameters.creationDate }}'
-          useCaseTemplateId: urn:dmb:utm:snowflake-outputport-template:0.0.0
-          infrastructureTemplateId: urn:dmb:itm:snowflake-outputport-provisioner:0
+          schema: '${{parameters.schema}}'
+          useCaseTemplateId: urn:dmb:utm:snowflake-storage-template:0.0.0
+          infrastructureTemplateId: urn:dmb:itm:snowflake-storage-provisioner:0
           destination: '${{ parameters.repoUrl | parseRepoUrl }}'
           displayName: '${{ parameters.displayName }}'
           artifact_id: '${{ parameters.name }}'

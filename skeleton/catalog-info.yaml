@@ -7,10 +7,10 @@ metadata:
     gitlab.com/project-slug: ${{ values.destination.owner + "/" + values.destination.repo }}
     backstage.io/techdocs-ref: dir:.
   tags:
-    - outputport
     - snowflake
+    - storage
 spec:
-  type: workload
+  type: storage
   lifecycle: experimental
   owner: ${{ values.developmentGroup | dump }}
   system: ${{ values.dataproduct | dump }}
@@ -19,7 +19,7 @@ spec:
     name: ${{ values.name | dump }}
     fullyQualifiedName: ${{ values.fullyQualifiedName | dump }}
     description: ${{ values.description | dump }}
-    kind: outputport
+    kind: storage
     version: ${{ values.identifier.split(".")[2] + ".0.0" }}
     infrastructureTemplateId: ${{ values.infrastructureTemplateId }}
     useCaseTemplateId: ${{ values.useCaseTemplateId }}
@@ -27,45 +27,8 @@ spec:
       - ${{ i }}{% endfor %}{% else %}[]{% endif %}
     platform: Snowflake
     technology: Snowflake
-    outputPortType: SQL
-    creationDate: ${{ values.creationDate }}
-    startDate: ${{ values.creationDate }}
-    dataContract:
-      schema:
-        - name: date
-          dataType: TEXT
-          constraint: NO CONSTRAINT
-        - name: location_key
-          dataType: TEXT
-          constraint: NO CONSTRAINT
-        - name: new_confirmed
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
-        - name: new_deceased
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
-        - name: new_recovered
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
-        - name: new_tested
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
-        - name: cumulative_confirmed
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
-        - name: cumulative_deceased
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
-        - name: cumulative_recovered
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
-        - name: cumulative_tested
-          dataType: NUMBER
-          constraint: NO CONSTRAINT
+    StorageType: Database
     tags: []
-    sampleData: {}
-    semanticLinking: []
     specific:
-      tableName: ${{ values.tableName }}
       database: ${{ values.database }}
       schema: ${{ values.schema }}
