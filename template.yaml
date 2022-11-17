@@ -92,17 +92,17 @@ spec:
         - tableName
       properties:
         tableName:
-          title: tableName
+          title: Table name
           type: string
-          description: Name of the table that you want to create inside a Snowflake Schema.
+          description: Name of the table that you want to create inside the Snowflake Schema
         database:
           title: Database
           type: string
-          description: Name of the Database
+          description: Name of the Database in the Snowflake. If not provided, default value (In this case, domain name) would be assigned during the creation.
         schema:
           title: Schema
           type: string
-          description: Name of the Schema
+          description: Name of the Schema inside a Snowflake Database. If not provided, default value (In this case, dpname_dpversion) would be assigned during the creation.
 
     - title: Choose a location
       required:
