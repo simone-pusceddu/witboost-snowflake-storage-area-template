@@ -26,7 +26,7 @@ spec:
           type: string
           description: Required name used for display purposes
           ui:field: EntityNamePicker
-          default: Snowflake Component
+          default: Snowflake Storage
           ui:options:
             allowArbitraryValues: true
         fullyQualifiedName:
