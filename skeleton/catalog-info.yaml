@@ -30,5 +30,5 @@ spec:
     StorageType: Database
     tags: []
     specific:
-      database: ${{ values.database }}
-      schema: ${{ values.schema }}
+      database: ${{ values.database | default(values.domain, true) | replace(r/domain:| |-/, "") | upper | dump}}
+      schema: ${{ (values.schema | default(values.dataproduct.split(".")[1], true) | replace(r/ |-/, "") + "_" + values.identifier.split(".")[2]) | upper | dump }}
