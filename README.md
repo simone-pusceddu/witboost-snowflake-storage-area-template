@@ -1,6 +1,8 @@
-# Snowflake Output Port template
+# Snowflake Storage Component Template
 
-Use this template to automatically create an Output Port based on a Snowflake instance.
+Use this template to create a database, a schema and some tables within a Snowflake instance. 
+
+We will need to create all tables that will be used for the Data Product, specially the final table the Output Port will use to build the view exposed to the public.
 
 ## Using the template
 
@@ -21,59 +23,98 @@ This section includes the basic information that any Component of Data Mesh Boos
 - Data Product: The Data Product this Workload belongs to, be sure to choose the right one.
 - Identifier: Unique ID for this new entity inside the domain. Don't worry to fill this field, it will be automatically filled for you.
 - Development Group: Development group of this Data Product. Don't worry to fill this field, it will be automatically filled for you.
-
+- Depends On: If you want your workload to depend on other components from the Data Product, you can choose this option (Optional).
 
 *Example:*
 
-**Name:** Snowflake Covid Output Port
-
-**Description:** Offers insight in the Google Covid Dataset 
-
-**Domain:** domain:marketing
-
-**Data Product:** system:marketing.covidrecoveries.0
-
-***Identifier:*** Will look something like this: *marketing.covidrecoveries.0.snowflake-covid-output-port*
-
-***Development Group:*** Might look something like this: *group:dataanalysis* Depends on the Data Product development group 
+| Field name              | Example value                                                                                          |
+|:------------------------|:-------------------------------------------------------------------------------------------------------|
+| **Name**                | Snowflake Vaccinations Storage                                                                         |
+| **Description**         | Creates the vaccinations schema for this Data Product                                                  |
+| **Domain**              | domain:healthcare                                                                                      |
+| **Data Product**        | system:healthcare.vaccinationsdp.0                                                                     |
+| ***Identifier***        | Will look something like this: *healthcare.vaccinationsdp.0.snowflake-vaccinations-storage*            |
+| ***Development Group*** | Might look something like this: *group:datameshplatform* Depends on the Data Product development group |
 
 ---
 
-### Provide Output Port deployment information
+### Snowflake deployment information
 
-This section will tell the Output Port where to get the data from inside Snowflake
+- Database: Name of the Database in the Snowflake. If left empty the Domain name will be set as default value.
+- Schema: Name of the Schema inside a snowflake database. If left empty the value `<DP_name>_<DP_majorversion>` will be set as default value.
 
-- Table name: Name of the table that you want to create inside the Snowflake Schema
-- Database: (Optional) Enter the name of the database you want to sync data into. If not specified the Domain name will be set as default value.
-- Schema: (Optional) Enter the name of the default schema. If not specified the value `<DP_name>_<DP_version>` will be set as default value. (The version will be rendered without the dots)
+If you specify custom values (different from default ones) **you will need to remember them and insert the same values on the Airbyte component**, since we are assuming that the Airbyte component will store the data and create the related tables on the storage location provided by this component.
 
 *Example:*
 
-**Table name:** CovidDatasetClean
-
-**Database:** AIRBYTEDB
-
-**Schema:** default
+| Field name   | Example value  |
+|:-------------|:---------------|
+| **Database** | HEALTHCARE     |
+| **Schema**   | vaccinationsdp |
 
 ---
 
 ### Choose a location
 
-Every component needs a host where the generated code will be saved. The default is `gitlab.com`. Refer to your team to understand the structure on how to use your repository to save this components.
+Every component needs a host where the generated code will be saved. The default is `gitlab.com`. Refer to your team to understand the structure on how to use your repository to save the components.
 
 - Host: The host where the repository will be created. By default is `gitlab.com`
-- User/Group: A group or a user that the repository belongs to, e.g. 'group/sub-group/sub-sub-group' or 'name.surname'. There are two ways of creating a new component. One way of creating it is by making a monorepo (in that way you will never change the field 'Repository' and it will always be a repository containing your data product and you will only need to change the root directory). The second way of creating a new component is by doing it always in another repository (in that case the root directory will always be '.' and you will always change the repository field).
+- User/Group: A group or a user that the repository belongs to, e.g. 'group/sub-group/sub-sub-group' or 'name.surname'. There are two ways of creating a new component. One way of creating it is by making a monorepo (in that way you will never change the field 'Repository' and it will always be a repository containing your data product, and you will only need to change the root directory). The second way of creating a new component is by doing it always in another repository (in that case the root directory will always be '.' and you will always change the repository field).
 - Repository: The name of the repository
 - Root Directory: The path that will be used as the repository root for this component. For monorepos this will be different for each component.
 
 *Example:*
 
-***Host:*** gitlab.com
+| Field name        | Example value                                  |
+|:------------------|:-----------------------------------------------|
+| ***Host***        | gitlab.com                                     |
+| **User/Group**    | MyCompany/mesh.repository/sandbox/vaccinations |
+| **Repository**    | VaccinationsSnowflakeStorage                   |
+| **RootDirectory** | .                                              |
 
-**User/Group:** MyCompany/Sandbox
+After this the system will show you the summary of the template, and you can go back and edit or go ahead and create the Component. 
 
-**Repository:** SnowflakeSandboxOutputPort
+After clicking on "Create" the registering of the Component will start. If no errors occurred it will go through the 3 phases (Fetching, Publishing and Registering) and will give you the links to the newly created Repository and the component in the Catalog.
 
-**RootDirectory:** .
+## Creating tables using this component
 
-After this the system will show you the summary of the template and you can go back and edit or go ahead and create the Component. After clicking on "Create" the registering of the Component will start. If no errors occurred it will go through the 3 phases (Fetching, Publishing and Registering) and will give you the links to the newly created Repository and the component in the Catalog.
+We can take advantage of the full potential of this component which also allows us to create new tables within the newly created database. Although the form allows us only to create a new database with a schema, we can modify the `catalog-info.yaml` that is created in the Git repository to add custom table creation. Below we show an example of the syntax that needs to be added to the YAML file in order to create a new table.
+
+**Since the tables and views are created at deployment time and not at running time, remember to **always** add here the tables you will use in the data transformation stages (SQL or dbt) and in the Output Port.**
+
+``` yaml
+spec:
+...
+  mesh:
+  ...
+    specific:
+      database: HEALTHCARE
+      schema: vaccinationsdp_0
+      tables:
+      - tableName: vaccinations_clean
+        schema:
+        - name: date
+          dataType: DATE
+          constraint: NO CONSTRAINT
+        - name: location_key
+          dataType: TEXT
+          constraint: PRIMARY KEY
+        - name: new_persons_vaccinated
+          dataType: NUMBER
+          constraint: NULLABLE
+        - name: new_persons_fully_vaccinated
+          dataType: NUMBER
+          constraint: NULLABLE
+        - name: new_vaccine_doses_administered
+          dataType: NUMBER
+          constraint: NULLABLE
+        - name: cumulative_persons_vaccinated
+          dataType: NUMBER
+          constraint: NULLABLE
+        - name: cumulative_persons_fully_vaccinated
+          dataType: NUMBER
+          constraint: NULLABLE
+        - name: cumulative_vaccine_doses_administered
+          dataType: NUMBER
+          constraint: NULLABLE
+```
