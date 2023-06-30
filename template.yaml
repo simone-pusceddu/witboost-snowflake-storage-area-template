@@ -86,7 +86,10 @@ spec:
               allowArbitraryValues: false
           description: A component could depend on other output ports or storage areas
 
+
     - title: Provide Snowflake deployment information
+      required:
+        - tableName
       properties:
         database:
           title: Database
@@ -96,23 +99,51 @@ spec:
           title: Schema
           type: string
           description: Name of the Schema inside a Snowflake database. If not provided, the default value (In this case, dpname_dpversion) will be assigned during the creation.
+        tableName:
+          title: Table Name
+          type: string
+          default: vaccinations_clean
+          description: Name of the table inside the Snowflake schema.
 
-    - title: Choose a location
-      required:
-        - repoUrl
+
+    - title: Provide information about Schema
       properties:
-        repoUrl:
-          title: Repository Location
-          type: string
-          ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - gitlab.com
-        rootDirectory:
-          title: Root Directory
-          type: string
-          description: Path that will be used as the repository root for this component
-          default: .
+        schemaColumns:
+          title: Schema Columns
+          type: array
+          items:
+            type: object
+            required: [name, dataType]
+            properties:
+              name:
+                type: string
+                title: Column Name
+              dataType:
+                type: string
+                default: TEXT
+                title: Column Data Type
+                enum:
+                  - TEXT
+                  - NUMBER
+                  - DATE
+                  - BOOLEAN
+              constraint:
+                type: string
+                title: Constraint
+                enum:
+                  - PRIMARY_KEY
+                  - NOT_NULL
+                  - UNIQUE
+                  - NO CONSTRAINT
+              dataLength:
+                type: integer
+                title: Column DataLength
+              precision:
+                type: integer
+                title: Column Precision
+              scale:
+                type: integer
+                title: Column Scale
 
   steps:
     - id: template
@@ -120,7 +151,7 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
-        targetPath: '${{ parameters.rootDirectory }}'
+        targetPath: '.'
         values:
           name: '${{ parameters.name }}'
           fullyQualifiedName: '${{ parameters.fullyQualifiedName }}'
@@ -132,9 +163,12 @@ spec:
           dependsOn: '${{ parameters.dependsOn }}'
           database: '${{ parameters.database }}'
           schema: '${{ parameters.schema }}'
+          tableName: '${{ parameters.tableName }}'
+          schemaColumns: '${{ parameters.schemaColumns }}'
+          repoUrl: 'gitlab.com?owner=AgileDMBSandbox%2F${{orgname}}%2Fmesh.repository%2F${{ parameters.domain | replace(r/domain:| |-/, "") }}%2F${{ parameters.dataproduct.split(".")[1] | replace(r/ |-/g, "") }}&repo=${{ parameters.name.split(" ") | join("") | lower }}'
           useCaseTemplateId: urn:dmb:utm:snowflake-storage-template:0.0.0
           infrastructureTemplateId: urn:dmb:itm:snowflake-storage-provisioner:0
-          destination: '${{ parameters.repoUrl | parseRepoUrl }}'
+          rootDirectory: '.'
           displayName: '${{ parameters.displayName }}'
           artifact_id: '${{ parameters.name }}'
           useCaseTemplateVersion: 0.0.0
@@ -145,8 +179,8 @@ spec:
       input:
         allowedHosts: ['gitlab.com']
         description: 'This is ${{ parameters.name }}'
-        repoUrl: '${{ parameters.repoUrl }}'
-        rootDirectory: '${{ parameters.rootDirectory }}'
+        repoUrl: 'gitlab.com?owner=AgileDMBSandbox%2F${{orgname}}%2Fmesh.repository%2F${{ parameters.domain | replace(r/domain:| |-/, "") }}%2F${{ parameters.dataproduct.split(".")[1] | replace(r/ |-/g, "") }}&repo=${{ parameters.name.split(" ") | join("") | lower }}'
+        rootDirectory: '.'
         dataproduct: '${{ parameters.dataproduct }}'
 
     - id: register
@@ -154,7 +188,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: '${{ steps.publish.output.repoContentsUrl }}'
-        catalogInfoPath: '/${{ parameters.rootDirectory }}/catalog-info.yaml'
+        catalogInfoPath: '/catalog-info.yaml'
 
   output:
     links:
