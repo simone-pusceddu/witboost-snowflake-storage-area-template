@@ -6,7 +6,7 @@
 
 Designed by [Agile Lab](https://www.agilelab.it/), witboost is a versatile platform that addresses a wide range of sophisticated data engineering challenges. It enables businesses to discover, enhance, and productize their data, fostering the creation of automated data platforms that adhere to the highest standards of data governance. Want to know more about witboost? Check it out [here](https://www.agilelab.it/witboost) or [contact us!](https://www.agilelab.it/contacts)
 
-This repository is part of our [Open Source projects](https://github.com/agile-lab-dev/witboost-open-source-projects) meant to showcase witboost's integration capabilities and provide a "batteries-included" product.
+This repository is part of our [Starter Kit](https://github.com/agile-lab-dev/witboost-starter-kit) meant to showcase witboost's integration capabilities and provide a "batteries-included" product.
 
 # Snowflake Storage Area Template
 
@@ -19,7 +19,7 @@ Use this template to create a database, a schema and tables within a Snowflake i
 
 We will need to create all tables that will be used for the Data Product, specially the final table the Output Port will use to build the view exposed to the public.
 
-Refer to the [witboost Open Source projects repository](https://github.com/agile-lab-dev/witboost-open-source-projects) for information on the Specific Provisioner that can be used to deploy components created with this Template.
+Refer to the [witboost Starter Kit repository](https://github.com/agile-lab-dev/witboost-starter-kit) for information on the Specific Provisioner that can be used to deploy components created with this Template.
 
 ### What's a Template?
 
