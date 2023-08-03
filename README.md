@@ -1,16 +1,55 @@
-# Snowflake Storage Component Template
+<p align="center">
+    <a href="https://www.agilelab.it/witboost">
+        <img src="docs/img/witboost_logo.svg" alt="witboost" width=600 >
+    </a>
+</p>
 
-Use this template to create a database, a schema and some tables within a Snowflake instance. 
+Designed by [Agile Lab](https://www.agilelab.it/), witboost is a versatile platform that addresses a wide range of sophisticated data engineering challenges. It enables businesses to discover, enhance, and productize their data, fostering the creation of automated data platforms that adhere to the highest standards of data governance. Want to know more about witboost? Check it out [here](https://www.agilelab.it/witboost) or [contact us!](https://www.agilelab.it/contacts)
+
+This repository is part of our [Open Source projects](https://github.com/agile-lab-dev/witboost-open-source-projects) meant to showcase witboost's integration capabilities and provide a "batteries-included" product.
+
+# Snowflake Storage Area Template
+
+- [Overview](#overview)
+- [Usage](#usage)
+
+## Overview
+
+Use this template to create a database, a schema and tables within a Snowflake instance.
 
 We will need to create all tables that will be used for the Data Product, specially the final table the Output Port will use to build the view exposed to the public.
 
-## Using the template
+Refer to the [witboost Open Source projects repository](https://github.com/agile-lab-dev/witboost-open-source-projects) for information on the Specific Provisioner that can be used to deploy components created with this Template.
+
+### What's a Template?
+
+A Template is a tool that helps create components inside a Data Mesh. Templates help establish a standard across the organization. This standard leads to easier understanding, management and maintenance of components. Templates provide a predefined structure so that developers don't have to start from scratch each time, which leads to faster development and allows them to focus on other aspects, such as testing and business logic.
+
+For more information, please refer to the [official documentation](https://docs.witboost.agilelab.it/docs/p1_user/p6_advanced/p6_1_templates/#getting-started).
+
+### What's a Storage Area?
+
+A Storage Area is what the components of a Data Product use to persist data that is created or used by the various Workloads or served by Output Ports.
+
+### Snowflake
+
+Snowflake is a cloud based data warehousing platform that simplifies the management and analysis of massive amounts of data. Its architecture separates computation and storage resources, allowing them to scale independently according to demand. The key features include:
+
+- Storage and Compute Separation: Unlike many traditional databases, Snowflake separates compute and storage resources, allowing each to scale independently. This ensures you pay only for the resources you use.
+- Multi-Cloud Capability: Snowflake is a platform-agnostic service that can be run on major cloud providers such as AWS, GCP and Microsoft Azure.
+- Zero Management: Snowflake is offered as a fully-managed service, which means you don't have to worry about infrastructure, indexes, partitions, or tuning to maintain peak performance.
+- Security: It provides robust security features such as end-to-end encryption, multi-factor authentication, and role-based access control to ensure data privacy and protection.
+- Concurrency and Performance: Snowflake can handle large numbers of simultaneous users and queries without degrading performance.
+- Time Travel: Snowflake allows you to access historical data at any point within a specified period, which can be up to 90 days. This can be used for data recovery or analytical purposes.
+- Cloning: the clone capability allows us to quickly duplicate anything, including databases, schemas, tables, and other Snowflake objects, in almost real time.
+
+Learn more about it on the [official website](https://www.snowflake.com/en/).
+
+## Usage
 
 ### Prerequisites
 
 A Data Product should already exist in order to attach the new components to it.
-
----
 
 ### Component basic information
 
@@ -36,8 +75,6 @@ This section includes the basic information that any Component of Data Mesh Boos
 | ***Identifier***        | Will look something like this: *healthcare.vaccinationsdp.0.snowflake-vaccinations-storage*            |
 | ***Development Group*** | Might look something like this: *group:datameshplatform* Depends on the Data Product development group |
 
----
-
 ### Snowflake deployment information
 
 - Database: Name of the Database in the Snowflake. If left empty the Domain name will be set as default value.
@@ -52,35 +89,11 @@ If you specify custom values (different from default ones) **you will need to re
 | **Database** | HEALTHCARE     |
 | **Schema**   | vaccinationsdp |
 
----
-
-### Choose a location
-
-Every component needs a host where the generated code will be saved. The default is `gitlab.com`. Refer to your team to understand the structure on how to use your repository to save the components.
-
-- Host: The host where the repository will be created. By default is `gitlab.com`
-- User/Group: A group or a user that the repository belongs to, e.g. 'group/sub-group/sub-sub-group' or 'name.surname'. There are two ways of creating a new component. One way of creating it is by making a monorepo (in that way you will never change the field 'Repository' and it will always be a repository containing your data product, and you will only need to change the root directory). The second way of creating a new component is by doing it always in another repository (in that case the root directory will always be '.' and you will always change the repository field).
-- Repository: The name of the repository
-- Root Directory: The path that will be used as the repository root for this component. For monorepos this will be different for each component.
-
-*Example:*
-
-| Field name        | Example value                                  |
-|:------------------|:-----------------------------------------------|
-| ***Host***        | gitlab.com                                     |
-| **User/Group**    | MyCompany/mesh.repository/sandbox/vaccinations |
-| **Repository**    | VaccinationsSnowflakeStorage                   |
-| **RootDirectory** | .                                              |
-
-After this the system will show you the summary of the template, and you can go back and edit or go ahead and create the Component. 
-
-After clicking on "Create" the registering of the Component will start. If no errors occurred it will go through the 3 phases (Fetching, Publishing and Registering) and will give you the links to the newly created Repository and the component in the Catalog.
-
-## Creating tables using this component
+### Creating tables using this component
 
 We can take advantage of the full potential of this component which also allows us to create new tables within the newly created database. Although the form allows us only to create a new database with a schema, we can modify the `catalog-info.yaml` that is created in the Git repository to add custom table creation. Below we show an example of the syntax that needs to be added to the YAML file in order to create a new table.
 
-**Since the tables and views are created at deployment time and not at running time, remember to **always** add here the tables you will use in the data transformation stages (SQL or dbt) and in the Output Port.**
+**Since the tables and views are created at deployment time and not at template cloning time, remember to **always** add here the tables you will use in the data transformation stages (SQL or dbt) and in the Output Port.**
 
 ``` yaml
 spec:
@@ -118,3 +131,25 @@ spec:
           dataType: NUMBER
           constraint: NULLABLE
 ```
+
+## License
+
+This project is available under the [Apache License, Version 2.0](https://opensource.org/licenses/Apache-2.0); see [LICENSE](LICENSE) for full details.
+
+## About us
+
+<p align="center">
+    <a href="https://www.agilelab.it">
+        <img src="docs/img/agilelab_logo.jpg" alt="Agile Lab" width=600>
+    </a>
+</p>
+
+Agile Lab creates value for its Clients in data-intensive environments through customizable solutions to establish performance driven processes, sustainable architectures, and automated platforms driven by data governance best practices.
+
+Since 2014 we have implemented 100+ successful Elite Data Engineering initiatives and used that experience to create Witboost: a technology agnostic, modular platform, that empowers modern enterprises to discover, elevate and productize their data both in traditional environments and on fully compliant Data mesh architectures.
+
+[Contact us](https://www.agilelab.it/contacts) or follow us on:
+- [LinkedIn](https://www.linkedin.com/company/agile-lab/)
+- [Instagram](https://www.instagram.com/agilelab_official/)
+- [YouTube](https://www.youtube.com/channel/UCTWdhr7_4JmZIpZFhMdLzAA)
+- [Twitter](https://twitter.com/agile__lab)
