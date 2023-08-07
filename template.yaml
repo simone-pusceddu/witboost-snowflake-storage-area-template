@@ -140,9 +140,11 @@ spec:
               precision:
                 type: integer
                 title: Column Precision
+                minimum: 1
               scale:
                 type: integer
                 title: Column Scale
+                minimum: 0
 
   steps:
     - id: template
