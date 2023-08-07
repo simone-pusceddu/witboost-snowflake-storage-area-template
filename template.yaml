@@ -102,7 +102,6 @@ spec:
         tableName:
           title: Table Name
           type: string
-          default: vaccinations_clean
           description: Name of the table inside the Snowflake schema.
 
 
