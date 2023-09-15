@@ -114,16 +114,18 @@ If any need arises in the future to expand the current list of data types, we ca
 
 *Example:*
 
-| Name                                    | Data Type | Constraint | Data Length | Precision | Scale |
-|:----------------------------------------|:----------|:-----------|:------------|:----------|:------|
-| _date_                                  | DATE      | -          | -           | -         | -     |
-| _location_key_                          | TEXT      | -          | -           | -         | -     |
-| _new_persons_vaccinated_                | NUMBER    | -          | -           | -         | -     |
-| _new_persons_fully_vaccinated_          | NUMBER    | -          | -           | -         | -     |
-| _new_vaccine_doses_administered_        | NUMBER    | -          | -           | -         | -     |
-| _cumulative_persons_vaccinated_         | NUMBER    | -          | -           | -         | -     |
-| _cumulative_persons_fully_vaccinated_   | NUMBER    | -          | -           | -         | -     |
-| _cumulative_vaccine_doses_administered_ | NUMBER    | -          | -           | -         | -     |
+| Name                                    | Data Type | Constraint  | Data Length | Precision | Scale |
+|:----------------------------------------|:----------|:------------|:------------|:----------|:------|
+| _date_                                  | DATE      | PRIMARY_KEY | -           | -         | -     |
+| _location_key_                          | TEXT      | PRIMARY_KEY | -           | -         | -     |
+| _new_persons_vaccinated_                | NUMBER    | -           | -           | -         | -     |
+| _new_persons_fully_vaccinated_          | NUMBER    | -           | -           | -         | -     |
+| _new_vaccine_doses_administered_        | NUMBER    | -           | -           | -         | -     |
+| _cumulative_persons_vaccinated_         | NUMBER    | -           | -           | -         | -     |
+| _cumulative_persons_fully_vaccinated_   | NUMBER    | -           | -           | -         | -     |
+| _cumulative_vaccine_doses_administered_ | NUMBER    | -           | -           | -         | -     |
+
+If multiple columns are marked as `PRIMARY_KEY`, a composite primary key will be created. 
 
 After this step, the system will show you the summary of the information provided. You can go back and edit them if you notice any mistake, otherwise you can go ahead and create the Component.
 

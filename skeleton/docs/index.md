@@ -97,10 +97,10 @@ spec:
         schema:
         - name: date
           dataType: DATE
-          constraint: NO CONSTRAINT
+          constraint: PRIMARY_KEY
         - name: location_key
           dataType: TEXT
-          constraint: PRIMARY KEY
+          constraint: PRIMARY_KEY
         - name: new_persons_vaccinated
           dataType: NUMBER
           constraint: NULLABLE
