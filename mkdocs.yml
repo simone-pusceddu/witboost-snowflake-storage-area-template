@@ -1,0 +1,8 @@
+site_name: "Snowflake Storage Template"
+site_description: "Create a Snowflake Storage Area using this template"
+
+nav:
+  - Template Usage: index.md
+
+plugins:
+  - techdocs-core
