@@ -1,35 +1,40 @@
-apiVersion: scaffolder.backstage.io/v1beta3
-kind: Template
+# it is important to use this apiVersion
+apiVersion: witboost.com/v1
+kind: EditTemplate
 metadata:
-  name: snowflake-storage-template.1
-  title: Snowflake Storage Area
-  description: Create a Snowflake Storage Area for storing data inside a Data Product
-  mesh:
-    icon: https://avatars.githubusercontent.com/u/6453780?s=280&v=4
+  name: edit-snowflake-storage-template.1
+  title: Edit Snowflake Storage Area
+  description: Edit a Snowflake Storage Area of a Data Product
   tags:
+    - edit
     - snowflake
     - storage
 spec:
-  owner: agilelab
-  type: storage
-
+  owner: agile_lab
+  useCaseTemplateId:
+    - urn:dmb:utm:snowflake-storage-template:0.0.0
   parameters:
-    - title: Component metadata
-      description: Basic information for this component.
+    - title: Update Snowflake Storage Area
+      description: | 
+        This wizard will allow you to edit the metadata for a previously created Snowflake Storage Area.
+        
+        Most metadata is editable but some (like the name, domain, data product etc) are not; their fields will be read-only.
+        
+        Some of the files in the component's repository cannot be updated by this wizard, namely:
+        - **Documentation**: `README.md`, `docs/index.md`, etc
+        - **CI/CD**: `.gitlab-ci-yaml`
+        You need to take care of updating these yourself, as given their nature it's hard to do automatically and they are often edited manually after the component's creation.
+        
+    - title: Update component metadata
+      description: update basic information for this component.
       required:
-        - name
-        - domain
-        - dataproduct
         - description
       properties:
         name:
           title: Name
           type: string
-          description: Required. The name of the component.
-          ui:field: EntityNamePicker
-          default: Snowflake Storage Area
-          ui:options:
-            allowArbitraryValues: true
+          description: Not editable. The name of the component.
+          ui:disabled: true
         fullyQualifiedName:
           title: Fully Qualified Name
           type: string
@@ -41,16 +46,17 @@ spec:
         domain:
           title: Domain
           type: string
-          description: Required. Domain of the Data Product this component belongs to
+          description: Not editable. Domain of the Data Product this component belongs to
           ui:field: EntityPicker
           ui:options:
             allowArbitraryValues: false
             allowedKinds: 
               - Domain
+          ui:disabled: true
         dataproduct:
           title: Data Product
           type: string
-          description: Required. Data Product this component belongs to
+          description: Not editable. Data Product this component belongs to
           ui:field: EntityPicker
           ui:filter:
             - fieldName: domain
@@ -59,6 +65,7 @@ spec:
             allowArbitraryValues: false
             allowedKinds: 
               - System
+          ui:disabled: true
         identifier:
           title: Identifier
           type: string
@@ -78,7 +85,10 @@ spec:
         dependsOn:
           title: Dependencies
           type: array
-          description: A component could depend on other components in the same Data Product. This information will be used to deploy the components in such an order that their dependencies already exist.
+          description: |
+            A component could depend on other components in the same Data Product. This information will be used to deploy the components in such an order that their dependencies already exist.
+
+            **Warning**: be careful not to select this component as its own dependency, otherwise it will become undeployable until you edit it again and remove that circular dependency.
           default: []
           items:
             type: string
@@ -92,11 +102,11 @@ spec:
           description: Tags for the component
           default: []
           items:
-            type: string        
+            type: string  
 
 
-    - title: Snowflake deployment information
-      description: Deployment information for this component, namely its location in Snowflake. 
+    - title: Update Snowflake deployment information
+      description: Update deployment information for this component, namely its location in Snowflake. 
       required:
         - tableName
       properties:
@@ -114,8 +124,8 @@ spec:
           description: Required. Name of the table inside the Snowflake schema above.
 
 
-    - title: Table Schema
-      description: Definition of the columns of the table.
+    - title: Update Table Schema
+      description: Update the definition of the columns of the table.
       properties:
         schemaColumns:
           title: Column Definitions
@@ -192,13 +202,14 @@ spec:
                     - precision
                     - scale
 
+
   steps:
     - id: template
       name: Fetch Skeleton + Template
       action: fetch:template
       input:
-        url: ./skeleton
-        targetPath: '.'
+        url: ./edit-skeleton
+        targetPath: .
         values:
           name: '${{ parameters.name }}'
           fullyQualifiedName: '${{ parameters.fullyQualifiedName }}'
@@ -213,34 +224,3 @@ spec:
           schema: '${{ parameters.schema }}'
           tableName: '${{ parameters.tableName }}'
           schemaColumns: '${{ parameters.schemaColumns }}'
-          repoUrl: 'gitlab.com?owner=AgileDMBSandbox%2F${{orgname}}%2Fmesh.repository%2F${{ parameters.domain | replace(r/domain:| |-/, "") }}%2F${{ parameters.dataproduct.split(".")[1] | replace(r/ |-/g, "") }}&repo=${{ parameters.name.split(" ") | join("") | lower }}'
-          useCaseTemplateId: urn:dmb:utm:snowflake-storage-template:0.0.0
-          infrastructureTemplateId: urn:dmb:itm:snowflake-storage-provisioner:0
-          rootDirectory: '.'
-          artifact_id: '${{ parameters.name }}'
-          useCaseTemplateVersion: 0.0.0
-
-    - id: publish
-      name: Publish
-      action: witboostMeshComponent:publish:gitlab
-      input:
-        allowedHosts: ['gitlab.com']
-        description: 'This is ${{ parameters.name }}'
-        repoUrl: 'gitlab.com?owner=AgileDMBSandbox%2F${{orgname}}%2Fmesh.repository%2F${{ parameters.domain | replace(r/domain:| |-/, "") }}%2F${{ parameters.dataproduct.split(".")[1] | replace(r/ |-/g, "") }}&repo=${{ parameters.name.split(" ") | join("") | lower }}'
-        rootDirectory: '.'
-        dataproduct: '${{ parameters.dataproduct }}'
-
-    - id: register
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: '${{ steps.publish.output.repoContentsUrl }}'
-        catalogInfoPath: '/catalog-info.yaml'
-
-  output:
-    links:
-      - title: Repository
-        url: '${{ steps.publish.output.remoteUrl }}'
-      - title: Open in catalog
-        icon: catalog
-        entityRef: '${{ steps.register.output.entityRef }}'

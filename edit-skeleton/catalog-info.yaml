@@ -1,33 +1,16 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ values.identifier }}
   description: ${{ values.description | dump }}
-  annotations:
-    gitlab.com/project-slug: 'AgileDMBSandbox/${{orgname}}/mesh.repository/${{ values.domain | replace(r/domain:| |-/, "") }}/${{ values.dataproduct.split(".")[1] | replace(r/ |-/g, "") }}/${{ values.name.split(" ") | join("") | lower }}'
-    backstage.io/techdocs-ref: dir:.
-  tags:
-    - snowflake
-    - storage
 spec:
   type: storage
   lifecycle: experimental
   owner: ${{ values.developmentGroup | dump }}
-  system: ${{ values.dataproduct | dump }}
-  domain: ${{ values.domain | dump }}
   mesh:
-    name: ${{ values.name | dump }}
     fullyQualifiedName: ${{ values.fullyQualifiedName | dump }}
     description: ${{ values.description | dump }}
-    kind: storage
-    version: ${{ values.identifier.split(".")[2] + ".0.0" }}
-    infrastructureTemplateId: ${{ values.infrastructureTemplateId }}
-    useCaseTemplateId: ${{ values.useCaseTemplateId }}
     dependsOn: {% if values.dependsOn | length > 0 %}{% for i in values.dependsOn %}
       - ${{ i }}{% endfor %}{% else %}[]{% endif %}
-    platform: Snowflake
-    technology: Snowflake
-    StorageType: Database
     tags: {% if values.tags | length > 0 %}{% for i in values.tags %}
       - tagFQN: ${{ i }}
         source: Tag
