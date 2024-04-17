@@ -1,4 +1,4 @@
-## Component Information
+## Component metadata
 
 | Field Name               | Value                            |
 |:-------------------------|:---------------------------------|
@@ -8,10 +8,10 @@
 | **Domain**               | ${{ values.domain }}             |
 | **Data Product**         | ${{ values.dataproduct }}        |
 | **Identifier**           | ${{ values.identifier }}         |
+| **Development Group**    | ${{ values.developmentGroup }}   |
 | **Depends On**           | ${{ values.dependsOn }}          |
 
-
-## Snowflake Deployment Information
+## Snowflake deployment information
 
 | Field Name     | Value                   |
 |:---------------|:------------------------|

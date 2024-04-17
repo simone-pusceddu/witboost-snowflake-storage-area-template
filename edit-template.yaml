@@ -114,14 +114,26 @@ spec:
           title: Snowflake Database
           type: string
           description: Name of the database in Snowflake. If not provided, a default value (the Domain name, in uppercase) will be assigned during the creation.
+          ui:field: RegexPicker
+          validation:
+            errorMessage: The database name should contain only alphabetic characters or "_"
+            regularExpression: ^[a-zA-Z_]*$
         schema:
           title: Snowflake Schema
           type: string
           description: Name of the schema inside the Snowflake database above. If not provided, the default value (the Data Product name ands its major version, separated by _ and in uppercase) will be assigned during the creation.
+          ui:field: RegexPicker
+          validation:
+            errorMessage: The schema name should contain only alphabetic characters or "_"
+            regularExpression: ^[a-zA-Z_]*$
         tableName:
           title: Table Name
           type: string
           description: Required. Name of the table inside the Snowflake schema above.
+          ui:field: RegexPicker
+          validation:
+            errorMessage: The table name should contain only alphabetic characters or "_"
+            regularExpression: ^[a-zA-Z_]+$
 
 
     - title: Update Table Schema
@@ -201,6 +213,28 @@ spec:
                   required:
                     - precision
                     - scale
+              - if: true
+                then:
+                  properties:
+                    businessTerms:
+                      title: Business Terms
+                      type: array
+                      description: Multiple selection for fixed tags
+                      uniqueItems: true
+                      ui:style:
+                        minWidth: 400
+                      items:
+                        type: string
+                        enum:
+                          - Raw
+                          - Derived
+                          - Metadata
+                          - Identifier
+                          - Dimension
+                          - Fact
+                    piiCheck:
+                      title: PII
+                      type: boolean
 
 
   steps:

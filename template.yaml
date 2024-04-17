@@ -9,6 +9,8 @@ metadata:
   tags:
     - snowflake
     - storage
+  annotations:
+    backstage.io/techdocs-ref: dir:.
 spec:
   owner: agilelab
   type: storage
@@ -41,7 +43,7 @@ spec:
         domain:
           title: Domain
           type: string
-          description: Required. Domain of the Data Product this component belongs to
+          description: Required. Domain of the Data Product this component belongs to.
           ui:field: EntityPicker
           ui:options:
             allowArbitraryValues: false
@@ -50,7 +52,7 @@ spec:
         dataproduct:
           title: Data Product
           type: string
-          description: Required. Data Product this component belongs to
+          description: Required. Data Product this component belongs to.
           ui:field: EntityPicker
           ui:filter:
             - fieldName: domain
@@ -89,7 +91,7 @@ spec:
         tags:
           title: Tags
           type: array
-          description: Tags for the component
+          description: Tags for the component.
           default: []
           items:
             type: string        
@@ -104,17 +106,29 @@ spec:
           title: Snowflake Database
           type: string
           description: Name of the database in Snowflake. If not provided, a default value (the Domain name, in uppercase) will be assigned during the creation.
+          ui:field: RegexPicker
+          validation:
+            errorMessage: The database name should contain only alphanumeric characters or "_"
+            regularExpression: ^[a-zA-Z0-9_]*$
         schema:
           title: Snowflake Schema
           type: string
-          description: Name of the schema inside the Snowflake database above. If not provided, the default value (the Data Product name ands its major version, separated by _ and in uppercase) will be assigned during the creation.
+          description: Name of the schema inside the Snowflake database specified above. If not provided, the default value (the Data Product name ands its major version, separated by _ and in uppercase) will be assigned during the creation.
+          ui:field: RegexPicker
+          validation:
+            errorMessage: The schema name should contain only alphanumeric characters or "_"
+            regularExpression: ^[a-zA-Z0-9_]*$
         tableName:
           title: Table Name
           type: string
-          description: Required. Name of the table inside the Snowflake schema above.
+          description: Required. Name of the table inside the Snowflake schema specifed above.
+          ui:field: RegexPicker
+          validation:
+            errorMessage: The table name should contain only alphanumeric characters or "_"
+            regularExpression: ^[a-zA-Z0-9_]+$
 
 
-    - title: Table Schema
+    - title: Table schema
       description: Definition of the columns of the table.
       properties:
         schemaColumns:
@@ -191,6 +205,29 @@ spec:
                   required:
                     - precision
                     - scale
+              - if: true
+                then:
+                  properties:
+                    businessTerms:
+                      title: Business Terms
+                      type: array
+                      description: Multiple selection for fixed tags
+                      uniqueItems: true
+                      ui:style:
+                        minWidth: 400
+                      items:
+                        type: string
+                        enum:
+                          - Raw
+                          - Derived
+                          - Metadata
+                          - Identifier
+                          - Dimension
+                          - Fact
+                    piiCheck:
+                      title: PII
+                      type: boolean
+
 
   steps:
     - id: template
@@ -220,6 +257,7 @@ spec:
           artifact_id: '${{ parameters.name }}'
           useCaseTemplateVersion: 0.0.0
 
+
     - id: publish
       name: Publish
       action: witboostMeshComponent:publish:gitlab
@@ -236,6 +274,7 @@ spec:
       input:
         repoContentsUrl: '${{ steps.publish.output.repoContentsUrl }}'
         catalogInfoPath: '/catalog-info.yaml'
+
 
   output:
     links:
