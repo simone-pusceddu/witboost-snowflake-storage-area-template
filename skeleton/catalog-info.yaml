@@ -1,10 +1,16 @@
+{% set domainNameNormalized = values.domain | replace(r/domain:| |-/, "") %}
+{% set dataProductNameNormalized = values.dataproduct.split(".")[1] | replace(r/ |-/g, "") %}
+{% set dataProductMajorVersion = values.identifier.split(".")[2] %}
+{% set componentNameNormalized = values.name.split(" ") | join("") | lower %}
+
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ${{ values.identifier }}
-  description: ${{ values.description | dump }}
+  description: |
+      "${{ values.description }}"
   annotations:
-    gitlab.com/project-slug: 'AgileDMBSandbox/${{orgname}}/mesh.repository/${{ values.domain | replace(r/domain:| |-/, "") }}/${{ values.dataproduct.split(".")[1] | replace(r/ |-/g, "") }}/${{ values.name.split(" ") | join("") | lower }}'
+    gitlab.com/project-slug: 'AgileDMBSandbox/${{orgname}}/mesh.repository/${{ domainNameNormalized }}/${{ dataProductNameNormalized }}/${{ componentNameNormalized }}'
     backstage.io/techdocs-ref: dir:.
   tags:
     - snowflake
@@ -12,15 +18,16 @@ metadata:
 spec:
   type: storage
   lifecycle: experimental
-  owner: ${{ values.developmentGroup | dump }}
-  system: ${{ values.dataproduct | dump }}
-  domain: ${{ values.domain | dump }}
+  owner: ${{ values.developmentGroup }}
+  system: ${{ values.dataproduct }}
+  domain: ${{ values.domain }}
   mesh:
-    name: ${{ values.name | dump }}
-    fullyQualifiedName: ${{ values.fullyQualifiedName | dump }}
-    description: ${{ values.description | dump }}
+    name: ${{ values.name }}
+    fullyQualifiedName: ${{ values.fullyQualifiedName }}
+    description: |
+        "${{ values.description }}"
     kind: storage
-    version: ${{ values.identifier.split(".")[2] + ".0.0" }}
+    version: ${{ dataProductMajorVersion + ".0.0" }}
     infrastructureTemplateId: ${{ values.infrastructureTemplateId }}
     useCaseTemplateId: ${{ values.useCaseTemplateId }}
     dependsOn: {% if values.dependsOn | length > 0 %}{% for i in values.dependsOn %}
@@ -34,10 +41,20 @@ spec:
         labelType: Manual
         state: Confirmed{% endfor %}{% else %}[]{% endif %}
     specific:
-      database: ${{ values.database | default(values.domain, true) | replace(r/domain:| |-/, "") | upper | dump}}
-      schema: ${{ (values.schema | default(values.dataproduct.split(".")[1], true) | replace(r/ |-/g, "") + "_" + values.identifier.split(".")[2]) | upper | dump }}
+      database: {% if (values.database | length) == 0 %}
+        {% set finalDatabaseName = domainNameNormalized %}
+        {% else %}
+        {% set finalDatabaseName = values.database | replace(r/ |-/, "") %}
+        {% endif %}
+        ${{ finalDatabaseName | upper }}
+      schema: {% if (values.schema | length) == 0 %}
+        {% set finalSchemaName = dataProductNameNormalized + "_" + dataProductMajorVersion %}
+        {% else %}
+        {% set finalSchemaName = values.schema | replace(r/ |-/, "") %}
+        {% endif %}
+        ${{ finalSchemaName | upper }}
       tables:
-      - tableName: ${{ values.tableName }}
+      - tableName: ${{ values.tableName | upper }}
         schema: {% if values.schemaColumns | length > 0 %}{% for i in values.schemaColumns %}
           - name: ${{ i.name }}
             dataType: ${{ i.dataType }}{% if i.constraint is defined and i.constraint != '(no constraint)' %}
