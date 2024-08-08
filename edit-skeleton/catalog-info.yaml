@@ -1,14 +1,20 @@
+{% set domainNameNormalized = values.domain | replace(r/domain:| |-/, "") %}
+{% set dataProductNameNormalized = values.dataproduct.split(".")[1] | replace(r/ |-/g, "") %}
+{% set dataProductMajorVersion = values.identifier.split(".")[2] %}
+
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  description: ${{ values.description | dump }}
+  description: |
+      ${{ values.description }}
 spec:
   type: storage
   lifecycle: experimental
-  owner: ${{ values.developmentGroup | dump }}
+  owner: ${{ values.developmentGroup }}
   mesh:
-    fullyQualifiedName: ${{ values.fullyQualifiedName | dump }}
-    description: ${{ values.description | dump }}
+    fullyQualifiedName: ${{ values.fullyQualifiedName }}
+    description: |
+        ${{ values.description }}
     dependsOn: {% if values.dependsOn | length > 0 %}{% for i in values.dependsOn %}
       - ${{ i }}{% endfor %}{% else %}[]{% endif %}
     tags: {% if values.tags | length > 0 %}{% for i in values.tags %}
@@ -17,8 +23,18 @@ spec:
         labelType: Manual
         state: Confirmed{% endfor %}{% else %}[]{% endif %}
     specific:
-      database: ${{ values.database | default(values.domain, true) | replace(r/domain:| |-/, "") | upper | dump}}
-      schema: ${{ (values.schema | default(values.dataproduct.split(".")[1], true) | replace(r/ |-/g, "") + "_" + values.identifier.split(".")[2]) | upper | dump }}
+      database: {% if (values.database | length) == 0 %}
+        {% set finalDatabaseName = domainNameNormalized %}
+        {% else %}
+        {% set finalDatabaseName = values.database | replace(r/ |-/, "") %}
+        {% endif %}
+        ${{ finalDatabaseName | upper }}
+      schema: {% if (values.schema | length) == 0 %}
+        {% set finalSchemaName = dataProductNameNormalized + "_" + dataProductMajorVersion %}
+        {% else %}
+        {% set finalSchemaName = values.schema | replace(r/ |-/, "") %}
+        {% endif %}
+        ${{ finalSchemaName | upper }}
       tables:
       - tableName: ${{ values.tableName }}
         schema: {% if values.schemaColumns | length > 0 %}{% for i in values.schemaColumns %}

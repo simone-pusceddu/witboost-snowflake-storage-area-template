@@ -1,0 +1,53 @@
+apiVersion: witboost.com/v1
+kind: ReverseProvisioningTemplate
+metadata:
+  name: snowflake-storage-reverse-provisioning-template.1
+  title: Snowflake Storage Area
+  description: Define a Snowflake Storage Area
+  tags:
+    - reverse-provisioning
+    - storage
+    - snowflake
+spec:
+  owner: agile_lab
+  useCaseTemplateId:
+    - urn:dmb:utm:snowflake-storage-template:0.0.0
+  parameters:
+    title: Snowflake Storage Area Information
+    description: |-
+      This wizard allows you to update the Snowflake Storage Area on Witboost by importing the metadata of the tables.
+
+      Please specify the information about the tables to be analyzed.
+    required:
+      - database
+      - schema
+      - tables
+    properties:
+      database:
+        title: Database
+        type: string
+        description: Required. Name of the Database in Snowflake.
+        ui:field: EntityNamePicker
+        pattern: ^[a-zA-Z0-9_]*$
+        ui:options:
+          allowArbitraryValues: true
+      schema:
+        title: Schema
+        type: string
+        description: Required. Name of the Schema inside a Snowflake database.
+        ui:field: EntityNamePicker
+        pattern: ^[a-zA-Z0-9_]*$
+        ui:options:
+          allowArbitraryValues: true
+      tables:
+        title: Tables
+        type: array
+        description: Required. Name of the table that is present inside the Snowflake.
+        default: []
+        minItems: 1
+        items:
+          type: string
+          ui:field: EntityNamePicker
+          pattern: ^[a-zA-Z0-9_]*$
+          ui:options:
+            allowArbitraryValues: true
