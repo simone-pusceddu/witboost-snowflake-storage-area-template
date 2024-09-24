@@ -12,9 +12,9 @@ metadata:
   annotations:
     backstage.io/techdocs-ref: dir:.
 spec:
+  generates: componenttype:default/storage
   owner: agilelab
   type: storage
-
   parameters:
     - title: Component metadata
       description: Basic information for this component.
