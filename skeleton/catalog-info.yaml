@@ -34,7 +34,7 @@ spec:
       - ${{ i }}{% endfor %}{% else %}[]{% endif %}
     platform: Snowflake
     technology: Snowflake
-    StorageType: Database
+    storageType: Database
     tags: {% if values.tags | length > 0 %}{% for i in values.tags %}
       - tagFQN: ${{ i }}
         source: Tag
@@ -57,11 +57,19 @@ spec:
       - tableName: ${{ values.tableName | upper }}
         schema: {% if values.schemaColumns | length > 0 %}{% for i in values.schemaColumns %}
           - name: ${{ i.name }}
-            dataType: ${{ i.dataType }}{% if i.constraint is defined and i.constraint != '(no constraint)' %}
-            constraint: ${{ i.constraint }}{% endif %}{% if i.dataLength is defined and i.dataType == 'TEXT' %}
-            dataLength: ${{ i.dataLength }}{% endif %}{% if i.precision is defined and i.dataType == 'NUMBER' %}
-            precision: ${{ i.precision }}{% endif %}{% if i.scale is defined and i.dataType == 'NUMBER' %}
-            scale: ${{ i.scale }}{% endif %}
+            dataType: ${{ i.dataType }}
+            {%- if i.constraint is defined and i.constraint != '(no constraint)' %}
+            constraint: ${{ i.constraint }}
+            {%- endif %}
+            {%- if i.dataLength is defined and i.dataType == 'TEXT' %}
+            dataLength: ${{ i.dataLength }}
+            {%- endif %}
+            {%- if i.precision is defined and i.dataType == 'NUMBER' %}
+            precision: ${{ i.precision }}
+            {%- endif %}
+            {%- if i.scale is defined and i.dataType == 'NUMBER' %}
+            scale: ${{ i.scale }}
+            {%- endif %}
             tags: {% if i.businessTerms | length > 0 or i.piiCheck %}
               {% if i.businessTerms | length > 0 %}
                 {% for j in i.businessTerms %}
@@ -77,4 +85,5 @@ spec:
                 labelType: Manual
                 state: Confirmed
               {% endif %}
-            {% else %}[]{% endif %}{% endfor %}{% else %}[]{% endif %}
+            {%- else %}[]{% endif %}
+        {%- endfor %}{% else %}[]{% endif %}
