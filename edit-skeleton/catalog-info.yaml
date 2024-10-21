@@ -12,7 +12,6 @@ spec:
   lifecycle: experimental
   owner: ${{ values.developmentGroup }}
   mesh:
-    fullyQualifiedName: ${{ values.fullyQualifiedName }}
     description: |
         ${{ values.description }}
     dependsOn: {% if values.dependsOn | length > 0 %}{% for i in values.dependsOn %}
