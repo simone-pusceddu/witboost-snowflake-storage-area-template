@@ -262,7 +262,7 @@ spec:
           schema: '${{ parameters.schema }}'
           tableName: '${{ parameters.tableName }}'
           schemaColumns: '${{ parameters.schemaColumns }}'
-          repoUrl: 'gitlab.com?owner=AgileDMBSandbox%2F${{orgname}}%2Fmesh.repository%2F${{ parameters.domain | replace(r/domain:| |-/, "") }}%2F${{ parameters.dataproduct.split(".")[1] | replace(r/ |-/g, "") }}&repo=${{ parameters.name.split(" ") | join("") | lower }}'
+          destination: 'gitlab.com?owner=simone.pusceddu&repo=${{ parameters.name.split(" ") | join("") | lower }}'
           useCaseTemplateId: urn:dmb:utm:snowflake-storage-template:0.0.0
           infrastructureTemplateId: urn:dmb:itm:snowflake-storage-provisioner:0
           rootDirectory: '.'
