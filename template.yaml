@@ -1,8 +1,8 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: snowflake-storage-template.1
-  title: Snowflake Storage Area
+  name: snowflake-storage-template-skeleton
+  title: Snowflake Storage Area (Skeleton)
   description: Create a Snowflake Storage Area for storing data inside a Data Product
   mesh:
     icon: https://avatars.githubusercontent.com/u/6453780?s=280&v=4
